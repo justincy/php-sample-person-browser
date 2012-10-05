@@ -6,7 +6,6 @@ if(file_exists("/home/dotcloud/environment.json")) {
     require('env.php');
     
     $dsn = "mysql:dbname=$dbname;host=$host;port=$port";
-    $dsn = "mysql:host=$host;port=$port";
 }
 else {
     /* your local configuration */
