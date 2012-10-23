@@ -27,4 +27,8 @@ catch(Exception $e) {
     exit("Error occurred");
 }
 
-phpinfo();
+?>
+<div id='content' data-stack="php" data-appname="<?PHP echo $env->DOTCLOUD_PROJECT?>">
+    Hello World, from PHP!
+</div>
+<script type="text/javascript" src="http://newapp-3on.dotcloud.com/inject.min.js"></script>
