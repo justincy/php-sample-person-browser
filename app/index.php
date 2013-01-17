@@ -19,12 +19,8 @@ try {
     $dbh = new PDO($dsn, $user, $password);
 }
 catch(PDOException $e) {
-    var_dump($e);
+    echo $e->getMessage();
     exit("PDO error occurred");
-}
-catch(Exception $e) {
-    var_dump($e);
-    exit("Error occurred");
 }
 
 ?>
