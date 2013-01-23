@@ -26,11 +26,11 @@ try {
     echo "Create DB '$dbname' if needed\n";
     $dbh->exec("CREATE DATABASE IF NOT EXISTS `$dbname`") or die(print_r($dbh->errorInfo(), true));
 } catch (Exception $e) {
-    sleep(1);
-    if(++$tries <= 30)
+    sleep(2);
+    if(++$tries <= 120)
         goto connection;
     else{
-        echo "\n";
-        die ("Could not connect to the database server\n");
+        echo "\nCould not connect to the database server\n";
+        exit(1);
     }        
 }
