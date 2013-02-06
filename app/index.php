@@ -23,7 +23,7 @@
   
   // Start a session if we haven't already
   else if( !isset($_SESSION['fs-session']) ) {
-    $fs->startOAuth2Authorization('http://localhost');
+    $fs->startOAuth2Authorization('http://personbrowserphp-justincy.dotcloud.com/index.php');
   }
   
   // If we reach here, it means we have a session
