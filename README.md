@@ -1,10 +1,10 @@
-#Boiler plate stack PHP & MySQL
+#PHP Sample Person Browser
 
-##What is this ?
-It is super easy to deploy any-stack on dotCloud, here is a tiny boiler plate to show you how simple and frustration-less dotCloud experience is.  
+This is a simple app built using the [FamilySearch PHP SDK](https://github.com/justincy/fs-php-sdk). It shows how to:
+* Authenticate using OAuth2
+* Navigate the discovery links
+* Read people and relationships
 
-##What you get
-In this boiler plate you will find the basic to get a PHP and MySQL stack running:
-* Use of the dotCoud environment
-* Communication with a database, MySQL
-* Advanced `dotCloud.yml` option: `postinstall script to create a new database.
+This sample app uses the sandbox reference. If you don't see any relationships after logging in, visit https://sandbox.familysearch.org/tree and add some. If you don't have access to the sandbox and would like to begin development with the FamilySearch APIs, visit https://familysearch.org/developers to get started.
+
+This repo is setup to run on [dotcloud](http://dotcloud.com). But it can easily be run locally by pointing your server to app/index.php. You will need to modify the devkey and oauth2 redirect uri to work in your new environment.

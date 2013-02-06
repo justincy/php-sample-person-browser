@@ -1,11 +1,14 @@
 <?php
   
+  $DEV_KEY = 'ABCD-EFGH-JKLM-NOPQ-RSTU-VWXY-0123-4567';
+  $OAUTH2_REDIRECT_URI = 'http://personbrowserphp-justincy.dotcloud.com/index.php';
+  
   require_once 'guzzle.phar';
   require_once 'FS.phar';
   
   session_start();
   
-  $fs = new FS\Client('ABCD-EFGH-JKLM-NOPQ-RSTU-VWXY-0123-4567', 'sandbox');
+  $fs = new FS\Client($DEV_KEY, 'sandbox');
   
   // If we receive a 401, logout
   $fs->getEventDispatcher()->addListener('request.error', function(Event $event) {
@@ -26,7 +29,7 @@
   
   // Start a session if we haven't already
   else if( !isset($_SESSION['fs-session']) ) {
-    $fs->startOAuth2Authorization('http://personbrowserphp-justincy.dotcloud.com/index.php');
+    $fs->startOAuth2Authorization($OAUTH2_REDIRECT_URI);
   }
   
   // If we reach here, it means we have a session
