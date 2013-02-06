@@ -51,31 +51,31 @@
 <html>
 <body>
 
-<h1><? echo $person->getName(); ?></h1>
-<div><label>Birth Date:</label> <? echo $person->getBirthDate(); ?></div>
-<div><label>Birth Place:</label> <? echo $person->getBirthPlace(); ?></div>
+<h1><?php echo $person->getName(); ?></h1>
+<div><label>Birth Date:</label> <?php echo $person->getBirthDate(); ?></div>
+<div><label>Birth Place:</label> <?php echo $person->getBirthPlace(); ?></div>
 
 <h2>Parents</h2>
-<? foreach( $person->getParents() as $parents ) { ?>
+<?php foreach( $person->getParents() as $parents ) { ?>
 <div class="parents-relationship">
-  <div><label>Mother:</label> <? echo person_link($parents['mother']); ?></div>
-  <div><label>Father:</label> <? echo person_link($parents['father']); ?></div>
+  <div><label>Mother:</label> <?php echo person_link($parents['mother']); ?></div>
+  <div><label>Father:</label> <?php echo person_link($parents['father']); ?></div>
 </div>
-<? } ?>
+<?php } ?>
 
 <h2>Spouses</h2>
-<? foreach( $person->getSpouses() as $spouse ) { ?>
+<?php foreach( $person->getSpouses() as $spouse ) { ?>
 <div class="parents-relationship">
-  <div><label>Spouse:</label> <? echo person_link($spouse['spouse']); ?></div>
+  <div><label>Spouse:</label> <?php echo person_link($spouse['spouse']); ?></div>
 </div>
-<? } ?>
+<?php } ?>
 
 <h2>Children</h2>
-<? foreach( $person->getChildren() as $child ) { ?>
+<?php foreach( $person->getChildren() as $child ) { ?>
 <div class="parents-relationship">
-  <div><label>Child:</label> <? echo person_link($child['child']); ?></div>
+  <div><label>Child:</label> <?php echo person_link($child['child']); ?></div>
 </div>
-<? } ?>
+<?php } ?>
 
 </body>
 </html>
