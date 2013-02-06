@@ -11,7 +11,7 @@
   $fs->getEventDispatcher()->addListener('request.error', function(Event $event) {
     if ($event['response']->getStatusCode() == 401) {
       unset($_SESSION['fs-session']);
-      header('Location: ' . __FILE__);
+      header('Location: index.php');
       exit;
     }
   });
@@ -20,7 +20,7 @@
   if( isset($_REQUEST['code']) ) {
     $_SESSION['fs-session'] = $fs->getOAuth2AccessToken($_REQUEST['code']);
     // Reload the page without the oauth2 parameters
-    header('Location: ' . __FILE__);
+    header('Location: index.php');
     exit;
   } 
   
@@ -47,7 +47,7 @@
   }
   
   function person_link($personUri) {
-    return '<a href="' . __FILE__ . '?person=' . urlencode($personUri) . '">' . $personUri . '</a>';
+    return '<a href="index.php?person=' . urlencode($personUri) . '">' . $personUri . '</a>';
   }
 
 ?>
