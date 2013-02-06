@@ -1,6 +1,3 @@
 www:
     type: php
     approot: app
-    postinstall: ./mysql.php
-db:
-    type: mysql
