@@ -19,6 +19,9 @@
   // If we're returning from the oauth2 redirect, capture the code
   if( isset($_REQUEST['code']) ) {
     $_SESSION['fs-session'] = $fs->getOAuth2AccessToken($_REQUEST['code']);
+    // Reload the page without the oauth2 parameters
+    header('Location: ' . __FILE__);
+    exit;
   } 
   
   // Start a session if we haven't already
@@ -44,7 +47,7 @@
   }
   
   function person_link($personUri) {
-    return '<a href="test.php?person=' . urlencode($personUri) . '">' . $personUri . '</a>';
+    return '<a href="' . __FILE__ . '?person=' . urlencode($personUri) . '">' . $personUri . '</a>';
   }
 
 ?>
