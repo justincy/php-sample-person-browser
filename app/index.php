@@ -10,26 +10,36 @@
   
   $fs = new FS\Client($DEV_KEY, 'sandbox');
   
-  // If we receive a 401, logout
-  $fs->getEventDispatcher()->addListener('request.error', function(Event $event) {
+  // Response to 4xx and 5xx errors
+  $fs->getEventDispatcher()->addListener('request.error', function(Guzzle\Common\Event $event) {
+    
+    // Logout when receiving a 401
     if ($event['response']->getStatusCode() == 401) {
       unset($_SESSION['fs-session']);
-      header('Location: index.php');
+      header('Location: ' . basename(__FILE__));
+      exit;
+    } 
+    
+    // Show all other errors
+    else {
+      $event->stopPropagation();
+      echo '<pre>', $event['request'], '</pre>';
+      echo '<pre>', $event['response'], '</pre>';
       exit;
     }
+    
   });
   
   // If we're returning from the oauth2 redirect, capture the code
   if( isset($_REQUEST['code']) ) {
     $_SESSION['fs-session'] = $fs->getOAuth2AccessToken($_REQUEST['code']);
-    // Reload the page without the oauth2 parameters
-    header('Location: index.php');
+    header('Location: ' . basename(__FILE__));
     exit;
   } 
   
   // Start a session if we haven't already
   else if( !isset($_SESSION['fs-session']) ) {
-    $fs->startOAuth2Authorization($OAUTH2_REDIRECT_URI);
+    $fs->startOAuth2Authorization('http://dev.fs.org/fs/test.php');
   }
   
   // If we reach here, it means we have a session
@@ -40,48 +50,50 @@
   
   // If a person was requested, fetch and display them
   if( isset($_REQUEST['person']) ) {
-    $person = $fs->getPersonWithRelationships($_REQUEST['person']);
+    $response = $fs->getPersonWithRelationships($_REQUEST['person']);
   } 
   
   // Otherwise, get and display the current person with their relationships
   else {
-    $person = $fs->getCurrentUserPerson();
-    $person = $fs->getPersonWithRelationships($person->getUri());
+    $response = $fs->getCurrentUserPerson();
+    $response = $fs->getPersonWithRelationships($response['persons'][0]['id']);
   }
   
-  function person_link($personUri) {
-    return '<a href="index.php?person=' . urlencode($personUri) . '">' . $personUri . '</a>';
+  $person = $response->getPerson();
+  
+  function person_link($personId) {
+    return '<a href="test.php?person=' . urlencode($personId) . '">' . $personId . '</a>';
   }
 
 ?>
 <html>
 <body>
 
-<h1><?php echo $person->getName(); ?></h1>
-<div><label>Birth Date:</label> <?php echo $person->getBirthDate(); ?></div>
-<div><label>Birth Place:</label> <?php echo $person->getBirthPlace(); ?></div>
+<h1><? echo $person['display']['name']; ?></h1>
+<div><label>Birth Date:</label> <? echo $person['display']['birthDate']; ?></div>
+<div><label>Birth Place:</label> <? echo $person['display']['birthPlace']; ?></div>
 
 <h2>Parents</h2>
-<?php foreach( $person->getParents() as $parents ) { ?>
+<? foreach( $response->getParents() as $rel ) { ?>
 <div class="parents-relationship">
-  <div><label>Mother:</label> <?php echo person_link($parents['mother']); ?></div>
-  <div><label>Father:</label> <?php echo person_link($parents['father']); ?></div>
+  <div><label>Mother:</label> <? echo person_link($rel['mother']['resourceId']); ?></div>
+  <div><label>Father:</label> <? echo person_link($rel['father']['resourceId']); ?></div>
 </div>
-<?php } ?>
+<? } ?>
 
 <h2>Spouses</h2>
-<?php foreach( $person->getSpouses() as $spouse ) { ?>
+<? foreach( $response->getSpouses() as $rel ) { ?>
 <div class="parents-relationship">
-  <div><label>Spouse:</label> <?php echo person_link($spouse['spouse']); ?></div>
+  <div><label>Spouse:</label> <? echo person_link($rel['spouse']['resourceId']); ?></div>
 </div>
-<?php } ?>
+<? } ?>
 
 <h2>Children</h2>
-<?php foreach( $person->getChildren() as $child ) { ?>
+<? foreach( $response->getChildren() as $rel ) { ?>
 <div class="parents-relationship">
-  <div><label>Child:</label> <?php echo person_link($child['child']); ?></div>
+  <div><label>Child:</label> <? echo person_link($rel['child']['resourceId']); ?></div>
 </div>
-<?php } ?>
+<? } ?>
 
 </body>
 </html>
