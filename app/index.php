@@ -8,8 +8,6 @@
   
   session_start();
   
-  $fs = new FS\Client($DEV_KEY, 'sandbox');
-  
   // Response to 4xx and 5xx errors
   $fs->getEventDispatcher()->addListener('request.error', function(Guzzle\Common\Event $event) {
     
@@ -56,42 +54,74 @@
   // Otherwise, get and display the current person with their relationships
   else {
     $response = $fs->getCurrentUserPerson();
-    $response = $fs->getPersonWithRelationships($response['persons'][0]['id']);
+    $response = $fs->getPersonWithRelationships($response->persons[0]->id);
   }
   
   $person = $response->getPerson();
   
-  function person_link($personId) {
-    return '<a href="test.php?person=' . urlencode($personId) . '">' . $personId . '</a>';
+  //echo '<pre>',print_r($response),'</pre>';
+  //exit;
+  
+  function person_link($personId, $text) {
+    return '<a href="test.php?person=' . urlencode($personId) . '">' . $text . '</a>';
   }
-
+  
 ?>
 <html>
 <body>
 
-<h1><? echo $person['display']['name']; ?></h1>
-<div><label>Birth Date:</label> <? echo $person['display']['birthDate']; ?></div>
-<div><label>Birth Place:</label> <? echo $person['display']['birthPlace']; ?></div>
+<h1><? echo $person->getPreferredName(); ?></h1>
+
+<h2>Summary</h2>
+<div><label>Name:</label> <? echo $person->displayExtension->name; ?></div>
+<div><label>Lifespan:</label> <? echo $person->displayExtension->lifespan; ?></div>
+<div><label>Birth Date:</label> <? echo $person->displayExtension->birthDate; ?></div>
+<div><label>Birth Place:</label> <? echo $person->displayExtension->birthPlace; ?></div>
+<div><label>Death Date:</label> <? echo $person->displayExtension->deathDate; ?></div>
+<div><label>Death Place:</label> <? echo $person->displayExtension->deathPlace; ?></div>
+
+<h2>Vitals</h2>
+<div><label>Given Name:</label> <? echo $person->getPreferredName()->getGivenName(); ?></div>
+<div><label>Surname:</label> <? echo $person->getPreferredName()->getSurname(); ?></div>
+<div><label>Birth Date:</label> <? echo $person->getBirth() ? $person->getBirth()->getDate() : ''; ?></div>
+<div><label>Birth Place:</label> <? echo $person->getBirth() ? $person->getBirth()->getPlace() : ''; ?></div>
+<div><label>Death Date:</label> <? echo $person->getDeath() ? $person->getDeath()->getDate() : ''; ?></div>
+<div><label>Death Place:</label> <? echo $person->getDeath() ? $person->getDeath()->getPlace() : ''; ?></div>
+
+<h2>Other Information</h2>
+<? foreach( $person->getNonVitalFacts() as $fact ) { ?>
+<div><label><? echo $fact->type ?>:</label> <? echo $fact; ?></div>
+<? } ?>
 
 <h2>Parents</h2>
-<? foreach( $response->getParents() as $rel ) { ?>
+<? 
+  foreach( $response->getParents() as $rel ) {
+    $father = $rel->getFather();
+    $mother = $rel->getMother();
+?>
 <div class="parents-relationship">
-  <div><label>Mother:</label> <? echo person_link($rel['mother']['resourceId']); ?></div>
-  <div><label>Father:</label> <? echo person_link($rel['father']['resourceId']); ?></div>
+  <div><label>Father:</label> <? if( $father ) echo person_link($father->id, $father->getPreferredName()); ?></div>
+  <div><label>Mother:</label> <? if( $mother ) echo person_link($mother->id, $mother->getPreferredName()); ?></div>
 </div>
 <? } ?>
 
 <h2>Spouses</h2>
-<? foreach( $response->getSpouses() as $rel ) { ?>
+<? 
+  foreach( $response->getSpouses() as $rel ) {
+    $spouse = $rel->getSpouse();
+?>
 <div class="parents-relationship">
-  <div><label>Spouse:</label> <? echo person_link($rel['spouse']['resourceId']); ?></div>
+  <div><label>Spouse:</label> <? echo person_link($spouse->id, $spouse->getPreferredName()); ?></div>
 </div>
 <? } ?>
 
 <h2>Children</h2>
-<? foreach( $response->getChildren() as $rel ) { ?>
+<? 
+  foreach( $response->getChildren() as $rel ) {
+    $child = $rel->getChild();
+?>
 <div class="parents-relationship">
-  <div><label>Child:</label> <? echo person_link($rel['child']['resourceId']); ?></div>
+  <div><label>Child:</label> <? echo person_link($child->id, $child->getPreferredName()); ?></div>
 </div>
 <? } ?>
 
