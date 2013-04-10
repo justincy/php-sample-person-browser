@@ -1,12 +1,14 @@
 <?php
   
   $DEV_KEY = 'ABCD-EFGH-JKLM-NOPQ-RSTU-VWXY-0123-4567';
-  $OAUTH2_REDIRECT_URI = 'http://personbrowserphp-justincy.dotcloud.com/index.php';
+  $OAUTH2_REDIRECT_URI = 'http://fs-php-sample-app.aws.af.cm/index.php';
   
-  require_once 'guzzle.phar';
-  require_once 'FS.phar';
+  require_once 'includes/guzzle.phar';
+  require_once 'includes/FS.phar';
   
   session_start();
+  
+  $fs = new FS\Client($DEV_KEY, 'sandbox');
   
   // Response to 4xx and 5xx errors
   $fs->getEventDispatcher()->addListener('request.error', function(Guzzle\Common\Event $event) {
@@ -37,7 +39,7 @@
   
   // Start a session if we haven't already
   else if( !isset($_SESSION['fs-session']) ) {
-    $fs->startOAuth2Authorization('http://dev.fs.org/fs/test.php');
+    $fs->startOAuth2Authorization($OAUTH2_REDIRECT_URI);
   }
   
   // If we reach here, it means we have a session

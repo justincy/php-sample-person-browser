@@ -1,0 +1,14 @@
+--- 
+applications: 
+  .: 
+    name: fs-php-sample-app
+    infra: aws
+    mem: 128M
+    framework: 
+      name: php
+      info: 
+        description: PHP Application
+        exec: 
+        mem: 128M
+    url: ${name}.${target-base}
+    instances: 1
