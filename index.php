@@ -1,8 +1,6 @@
 <?php
-  
-  $DEV_KEY = 'ABCD-EFGH-JKLM-NOPQ-RSTU-VWXY-0123-4567';
-  $OAUTH2_REDIRECT_URI = 'http://fs-php-sample-app.aws.af.cm/index.php';
-  
+
+  require_once 'config.php';
   require_once 'includes/guzzle.phar';
   require_once 'includes/FS.phar';
   
@@ -55,8 +53,8 @@
   
   // Otherwise, get and display the current person with their relationships
   else {
-    $response = $fs->getCurrentUserPerson();
-    $response = $fs->getPersonWithRelationships($response->persons[0]->id);
+    $user = $fs->getCurrentUser();
+    $response = $fs->getPersonWithRelationships($user->getTreeUserId());
   }
   
   $person = $response->getPerson();
@@ -75,12 +73,12 @@
 <h1><? echo $person->getPreferredName(); ?></h1>
 
 <h2>Summary</h2>
-<div><label>Name:</label> <? echo $person->displayExtension->name; ?></div>
-<div><label>Lifespan:</label> <? echo $person->displayExtension->lifespan; ?></div>
-<div><label>Birth Date:</label> <? echo $person->displayExtension->birthDate; ?></div>
-<div><label>Birth Place:</label> <? echo $person->displayExtension->birthPlace; ?></div>
-<div><label>Death Date:</label> <? echo $person->displayExtension->deathDate; ?></div>
-<div><label>Death Place:</label> <? echo $person->displayExtension->deathPlace; ?></div>
+<div><label>Name:</label> <? echo $person->getDisplayExtension()->getName(); ?></div>
+<div><label>Lifespan:</label> <? echo $person->getDisplayExtension()->getLifespan; ?></div>
+<div><label>Birth Date:</label> <? echo $person->getDisplayExtension()->getBirthDate; ?></div>
+<div><label>Birth Place:</label> <? echo $person->getDisplayExtension()->getBirthPlace; ?></div>
+<div><label>Death Date:</label> <? echo $person->getDisplayExtension()->getDeathDate; ?></div>
+<div><label>Death Place:</label> <? echo $person->getDisplayExtension()->getDeathPlace; ?></div>
 
 <h2>Vitals</h2>
 <div><label>Given Name:</label> <? echo $person->getPreferredName()->getGivenName(); ?></div>
@@ -102,8 +100,8 @@
     $mother = $rel->getMother();
 ?>
 <div class="parents-relationship">
-  <div><label>Father:</label> <? if( $father ) echo person_link($father->id, $father->getPreferredName()); ?></div>
-  <div><label>Mother:</label> <? if( $mother ) echo person_link($mother->id, $mother->getPreferredName()); ?></div>
+  <div><label>Father:</label> <? if( $father ) echo person_link($father->getResourceId(), $father->getResourceId()); ?></div>
+  <div><label>Mother:</label> <? if( $mother ) echo person_link($mother->getResourceId(), $mother->getResourceId()); ?></div>
 </div>
 <? } ?>
 
@@ -113,7 +111,7 @@
     $spouse = $rel->getSpouse();
 ?>
 <div class="parents-relationship">
-  <div><label>Spouse:</label> <? echo person_link($spouse->id, $spouse->getPreferredName()); ?></div>
+  <div><label>Spouse:</label> <? echo person_link($spouse->getResourceId(), $spouse->getResourceId()); ?></div>
 </div>
 <? } ?>
 
@@ -123,7 +121,7 @@
     $child = $rel->getChild();
 ?>
 <div class="parents-relationship">
-  <div><label>Child:</label> <? echo person_link($child->id, $child->getPreferredName()); ?></div>
+  <div><label>Child:</label> <? echo person_link($child->getResourceId(), $child->getResourceId()); ?></div>
 </div>
 <? } ?>
 
