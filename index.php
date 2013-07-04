@@ -53,8 +53,8 @@
   
   // Otherwise, get and display the current person with their relationships
   else {
-    $user = $fs->getCurrentUser();
-    $response = $fs->getPersonWithRelationships($user->getTreeUserId());
+    $response = $fs->getCurrentUserPerson();
+    $response = $fs->getPersonWithRelationships($response->getPerson()->getId());
   }
   
   $person = $response->getPerson();
@@ -63,7 +63,7 @@
   //exit;
   
   function person_link($personId, $text) {
-    return '<a href="test.php?person=' . urlencode($personId) . '">' . $text . '</a>';
+    return '<a href="index.php?person=' . urlencode($personId) . '">' . $text . '</a>';
   }
   
 ?>
@@ -74,11 +74,11 @@
 
 <h2>Summary</h2>
 <div><label>Name:</label> <? echo $person->getDisplayExtension()->getName(); ?></div>
-<div><label>Lifespan:</label> <? echo $person->getDisplayExtension()->getLifespan; ?></div>
-<div><label>Birth Date:</label> <? echo $person->getDisplayExtension()->getBirthDate; ?></div>
-<div><label>Birth Place:</label> <? echo $person->getDisplayExtension()->getBirthPlace; ?></div>
-<div><label>Death Date:</label> <? echo $person->getDisplayExtension()->getDeathDate; ?></div>
-<div><label>Death Place:</label> <? echo $person->getDisplayExtension()->getDeathPlace; ?></div>
+<div><label>Lifespan:</label> <? echo $person->getDisplayExtension()->getLifespan(); ?></div>
+<div><label>Birth Date:</label> <? echo $person->getDisplayExtension()->getBirthDate(); ?></div>
+<div><label>Birth Place:</label> <? echo $person->getDisplayExtension()->getBirthPlace(); ?></div>
+<div><label>Death Date:</label> <? echo $person->getDisplayExtension()->getDeathDate(); ?></div>
+<div><label>Death Place:</label> <? echo $person->getDisplayExtension()->getDeathPlace(); ?></div>
 
 <h2>Vitals</h2>
 <div><label>Given Name:</label> <? echo $person->getPreferredName()->getGivenName(); ?></div>
@@ -90,7 +90,7 @@
 
 <h2>Other Information</h2>
 <? foreach( $person->getNonVitalFacts() as $fact ) { ?>
-<div><label><? echo $fact->type ?>:</label> <? echo $fact; ?></div>
+<div><label><? echo $fact->getType() ?>:</label> <? echo $fact; ?></div>
 <? } ?>
 
 <h2>Parents</h2>
